@@ -44,3 +44,30 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 lib/main.dart
+
+# Flutter
+build/
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+
+# Android
+android/.gradle/
+.android/
+
+# iOS
+ios/Pods/
+ios/.symlinks/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+
+# IDEs
+.vscode/
+.idea/
+
+# Misc
+*.iml
