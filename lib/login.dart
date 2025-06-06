@@ -1,80 +1,121 @@
 import 'package:flutter/material.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+List<Map<String, String>> usuariosCadastrados = [
+  {'email': 'lepolepo@gmail.com', 'senha': '1234'},
+  {'email': 'bencapai@gmail.com', 'senha': 'abcd'},
+];
 
+class Login extends StatefulWidget {
   @override
-  State<Login> createState() => _LoginState();
+  _LoginState createState() => _LoginState();
 }
 
 class _LoginState extends State<Login> {
-  GlobalKey<FormState> usuarioKey = new GlobalKey();
-  TextEditingController emailController = new TextEditingController();
-  TextEditingController senhaController = new TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _senhaController = TextEditingController();
+
+  String _mensagem = '';
+
+  void _fazerLogin() {
+    String usuario = _emailController.text;
+    String senha = _senhaController.text;
+
+    bool encontrado = usuariosCadastrados.any((usuarioMap) =>
+        usuarioMap['email'] == usuario && usuarioMap['senha'] == senha);
+
+    setState(() {
+      _mensagem = encontrado
+          ? 'Login bem-sucedido! 🤖'
+          : 'Usuário ou senha incorretos.';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Center(
-        child: Form(
-          key: usuarioKey,
-          child: Column(
-            children: [
-              TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: 'Digite seu email',
-                border: UnderlineInputBorder(),
-                prefixIcon: Icon(Icons.email)
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.android, color: Colors.cyanAccent, size: 80),
+                SizedBox(height: 20),
+                Text(
+                  'LOGIN DE USUÁRIO',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.cyanAccent,
+                  ),
                 ),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Insira um email';
-                  } else {
-                    //validar email que nao termina com @
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: senhaController,
-                decoration: InputDecoration(labelText: 'Digite sua senha'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Insira uma senha';
-                  } else {
-                    //adicionar qualquer outra coisa
-                  }
-                  return null;
-                },
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  if (usuarioKey.currentState!.validate()) {
-                    String email = emailController.text;
-                    int senha = int.parse(senhaController.text);
-                    print(email + '' + senha.toString());
-
-                    showDialog(
-                      context: context,
-                      builder:
-                          (context) => AlertDialog(
-                            title: Text('Alerta'),
-                            content: Text(email + "" + senha.toString()),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Ok'),
-                              ),
-                            ],
-                          ),
-                    );
-                  }
-                },
-                child: Text('Login'),
-              ),
-            ],
+                SizedBox(height: 20),
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    labelStyle: TextStyle(color: Colors.cyanAccent),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.cyanAccent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Digite o email';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  controller: _senhaController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: 'Senha',
+                    labelStyle: TextStyle(color: Colors.cyanAccent),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.cyanAccent),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white),
+                    ),
+                  ),
+                  style: TextStyle(color: Colors.white),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Digite a senha';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.cyanAccent,
+                    foregroundColor: Colors.black,
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState!.validate()) {
+                      _fazerLogin();
+                    }
+                  },
+                  child: Text('Entrar'),
+                ),
+                SizedBox(height: 20),
+                Text(
+                  _mensagem,
+                  style: TextStyle(color: Colors.white),
+                )
+              ],
+            ),
           ),
         ),
       ),
